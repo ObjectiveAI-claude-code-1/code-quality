@@ -1,7 +1,8 @@
 import { Functions } from "objectiveai";
 
 export const Profile: Functions.RemoteProfile = {
-  description: "Placeholder profile.",
+  description:
+    "The default profile for code-quality scoring. Uses an ensemble of fast and capable models to evaluate code quality across multiple dimensions.",
   changelog: null,
   tasks: [
     {
