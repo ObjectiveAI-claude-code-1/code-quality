@@ -1,73 +1,70 @@
-# ObjectiveAI Function Sandbox
+# code-quality
 
-A sandbox environment for creating ObjectiveAI Functions and Profiles.
+An ObjectiveAI Function that evaluates code quality.
 
-[GitHub](https://github.com/ObjectiveAI/objectiveai) | [Website](https://objective-ai.io) | [Discord](https://discord.gg/gbNFHensby)
+[ObjectiveAI](https://objective-ai.io) | [Discord](https://discord.gg/gbNFHensby)
 
-## What is this?
+## What does it do?
 
-This repository is a template workspace for inventing new ObjectiveAI **Functions** (scoring/ranking pipelines) and **Profiles** (learned weights).
+This function scores how well-written a piece of code is based on multiple quality dimensions:
 
-It includes a **Claude Code skill** (`~/.claude/skills/invent/SKILL.md`) that guides Claude through the entire process of inventing a new Function from scratch - from studying examples to validating the new Function/Profile pair to publishing on GitHub.
+- **Readability** - Is the code easy to understand?
+- **Maintainability** - Is the code easy to modify and extend?
+- **Efficiency** - Does the code perform well?
+- **Error handling** - Does the code handle edge cases properly?
+- **Best practices** - Does the code follow established conventions?
 
-The sandbox provides all the tooling needed to:
+Returns a single score in **[0, 1]** where 1 represents excellent code quality.
 
-- Define a Function and Profile in TypeScript
-- Validate against the ObjectiveAI schema
-- Test with example inputs
-- Export to `function.json` and `profile.json`
-- Publish to GitHub and the ObjectiveAI index
+## Input Schema
 
-## Quick Start
-
-```bash
-npm install
-npm run init      # Fetch example functions/profiles
-npm run build     # Validate, test, and export
-npm run publish   # (Optional) Index on ObjectiveAI
+```json
+{
+  "code": "string (required) - The code snippet to evaluate",
+  "language": "string (optional) - Programming language (e.g., 'python', 'javascript')",
+  "context": "string (optional) - What the code is supposed to do"
+}
 ```
 
-## Project Structure
+## Example Usage
 
+```typescript
+import { Functions } from "objectiveai";
+
+const result = await Functions.Executions.remoteFunctionRemoteProfileCreate(
+  client,
+  {
+    owner: "ObjectiveAI-claude-code-1",
+    repository: "code-quality",
+    input: {
+      code: `function add(a, b) { return a + b; }`,
+      language: "javascript",
+      context: "Simple arithmetic helper"
+    }
+  }
+);
+
+console.log(result.output); // e.g., 0.75
 ```
-├── defs.ts           # Define your Function, Profile, and ExampleInputs here
-├── main.ts           # Scratchpad for experiments (npm run start)
-├── build.ts          # Exports Function/Profile to JSON (readonly)
-├── test.ts           # Validates and tests everything (readonly)
-├── init.ts           # Fetches example functions/profiles (readonly)
-├── publish.ts        # Publishes to ObjectiveAI index (readonly)
-├── example_input.ts  # ExampleInput type definition (readonly)
-├── function.json     # Generated Function output
-├── profile.json      # Generated Profile output
-├── examples/         # Downloaded example functions/profiles
-└── objectiveai/      # ObjectiveAI SDK (git submodule)
-```
 
-## Workflow
+## Output
 
-1. **Study examples** - Run `npm run init` to download example functions/profiles, then explore `examples/`
-2. **Define your Function** - Edit `defs.ts` to create your Function with tasks and output expressions
-3. **Define your Profile** - Add a Profile that specifies ensembles and weights for each task
-4. **Create ExampleInputs** - Add 10 diverse test inputs covering edge cases
-5. **Build and test** - Run `npm run build` to validate and export
-6. **Publish** - Push to GitHub, optionally run `npm run publish` to index
+The function uses a 5-point scale internally (Excellent, Good, Acceptable, Poor, Very Poor) and converts votes to a score:
 
-## Scripts
+| Rating | Score Weight |
+|--------|--------------|
+| Excellent | 1.0 |
+| Good | 0.75 |
+| Acceptable | 0.5 |
+| Poor | 0.25 |
+| Very Poor | 0.0 |
 
-| Command | Description |
-|---------|-------------|
-| `npm run start` | Run the scratchpad (`main.ts`) for experiments |
-| `npm run init` | Fetch example functions/profiles into `examples/` |
-| `npm run build` | Validate, test, and export to JSON |
-| `npm run test` | Run validation tests only |
-| `npm run publish` | Publish to ObjectiveAI index (requires API key) |
+## Files
 
-## Using with Claude Code
-
-This sandbox includes a skill for Claude Code. To have Claude invent a new Function:
-
-1. Open this workspace in Claude Code
-2. Ask Claude to invent a new function (the skill will guide the process)
-3. Claude will study examples, propose ideas, and implement the Function/Profile
-
-The skill supports both **collaborative** (back-and-forth) and **autonomous** modes.
+| File | Description |
+|------|-------------|
+| `function.json` | The exported Function definition |
+| `profile.json` | The exported Profile (ensemble weights) |
+| `function.ts` | TypeScript source for the Function |
+| `profile.ts` | TypeScript source for the Profile |
+| `inputs.ts` | Test inputs for validation |
