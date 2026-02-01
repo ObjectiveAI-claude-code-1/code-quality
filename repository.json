@@ -1,0 +1,4 @@
+{
+  "repository": "code-quality",
+  "repositoryDescription": "Code Quality Scoring. Evaluate how well-written a piece of code is based on multiple quality dimensions including readability, maintainability, efficiency, and adherence to best practices. Returns a single score in [0, 1] where 1 represents excellent code quality. "
+}

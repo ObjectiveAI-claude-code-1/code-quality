@@ -15,13 +15,8 @@
 "Bash(npm run build-final)",
 "Bash(npm run install-rust-logs)",
 "Bash(npm install)",
+"Bash(npm run commit-and-push *)",
 "Bash(git submodule update *)",
-"Bash(git add *)",
-"Bash(git commit *)",
-"Bash(git push *)",
-"Bash(git remote *)",
-"Bash(git status)",
-"Bash(gh repo create *)",
 "Bash(ls*)",
 "Bash(cd)",
 "Bash(cat)",
@@ -35,6 +30,7 @@
 "Edit(./inputs.ts)",
 "Edit(./profile.ts)",
 "Edit(./README.md)",
+"Edit(./repository.json)",
 "ExitPlanMode",
 "Skill",
 "WebFetch",
@@ -73,3 +69,6 @@ The assistant will never try to invoke any other commands. The assistant will no
 
 ### Server Logs
 - `serverLog.txt` - Contains all server errors and logs from `npm run build`. The server does not write to stdout; read this file to debug test failures.
+
+### Compiled Tasks
+- `compiledTasks.json` - Contains the compiled tasks for each input from `npm run build`. Useful for debugging JMESPath expressions and understanding how tasks are compiled.

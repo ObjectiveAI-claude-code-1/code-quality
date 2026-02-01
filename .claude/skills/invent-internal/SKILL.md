@@ -117,7 +117,17 @@ Tests run a local server from the objectiveai submodule. If tests fail, it is du
 
 ### Debugging with Rust Logging
 
-You can add `println!` or `dbg!` statements in `objectiveai/objectiveai-api/src/...` to debug. These will appear in `serverLog.txt`.
+When errors are unclear or you need deeper insight into what's happening during execution, adding Rust logging is often the fastest path to understanding the problem. Add `println!` or `dbg!` statements to inspect intermediate values, expression evaluations, or task execution flow. Output appears in `serverLog.txt`.
+
+Depending on what you're debugging, you may need to add logging to one or more of:
+- `objectiveai/objectiveai-api/src/...` - Server-side execution and task orchestration
+- `objectiveai/objectiveai-rs/src/...` - Core data structures and validation
+- `objectiveai/objectiveai-rs-wasm-js/src/...` - WASM bindings and client-side compilation
+
+This is especially useful for:
+- Understanding how expressions are being evaluated
+- Seeing the actual data structures at runtime
+- Tracing execution flow through the function pipeline
 
 **IMPORTANT**: After adding Rust logging, you MUST run:
 ```
@@ -143,10 +153,13 @@ This resets any modifications to the objectiveai submodule and runs a clean buil
 
 ## Step 6: Publish to GitHub
 
-1. Run `git status` to see changes
-2. Run `git add` to stage files (function.ts, profile.ts, inputs.ts, function.json, profile.json, README.md)
-3. Run `git commit` with a descriptive message
-4. Run `gh repo create {repository-name} --public --source=. --push` using the repository name from function.md
+Run `npm run commit-and-push -- -m "Your commit message here"` with a descriptive commit message.
+
+This command will:
+1. Check out any changes to the objectiveai submodule
+2. Stage all changes and create a commit
+3. Create the GitHub repository (if it doesn't exist) using the name and description from `repository.json`
+4. Push the commit
 
 ---
 
@@ -162,8 +175,10 @@ This resets any modifications to the objectiveai submodule and runs a clean buil
 - `function.json` - Exported function
 - `profile.json` - Exported profile
 - `serverLog.txt` - Server errors and logs from build
+- `compiledTasks.json` - Compiled tasks for each input from build (useful for debugging JMESPath expressions)
 
 ### Commands
 - `npm run build` - Test and export
 - `npm run build-final` - Reset submodule and do final build
 - `npm run install-rust-logs` - Rebuild after adding Rust logging
+- `npm run commit-and-push -- -m "message"` - Commit and push to GitHub (creates repo if needed)
